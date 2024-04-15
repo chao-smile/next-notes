@@ -11,6 +11,7 @@
     "format:fix": "prettier -w \"./**/*.{ts,tsx,js,jsx,json,md}\""
   },
   "dependencies": {
+    "ioredis": "^5.3.2",
     "next": "14.1.4",
     "react": "^18",
     "react-dom": "^18"
