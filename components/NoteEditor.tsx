@@ -2,13 +2,22 @@
 
 import { useState } from "react";
 import NotePreview from "@/components/NotePreview";
-import { useFormStatus } from "react-dom";
+import { useFormState } from "react-dom";
 import { deleteNote, saveNote } from "../app/actions";
+import SaveButton from "@/components/SaveButton";
+import DeleteButton from "@/components/DeleteButton";
+
+const initialState = {
+  message: null,
+};
 
 export default function NoteEditor({ noteId, initialTitle, initialBody }) {
-  const { pending } = useFormStatus();
+  const [saveState, saveFormAction] = useFormState(saveNote, initialState);
+  const [delState, delFormAction] = useFormState(deleteNote, initialState);
+
   const [title, setTitle] = useState(initialTitle);
   const [body, setBody] = useState(initialBody);
+
   const isDraft = !noteId;
 
   return (
@@ -16,28 +25,10 @@ export default function NoteEditor({ noteId, initialTitle, initialBody }) {
       <form className="note-editor-form" autoComplete="off">
         <div className="note-editor-menu" role="menubar">
           <input type="hidden" name="noteId" value={noteId} />
-          <button
-            className="note-editor-done"
-            disabled={pending}
-            type="submit"
-            formAction={saveNote}
-            role="menuitem"
-          >
-            <img src="/checkmark.svg" width="14px" height="10px" alt="" role="presentation" />
-            Done
-          </button>
-          {!isDraft && (
-            <button
-              className="note-editor-delete"
-              disabled={pending}
-              formAction={deleteNote}
-              role="menuitem"
-            >
-              <img src="/cross.svg" width="10px" height="10px" alt="" role="presentation" />
-              Delete
-            </button>
-          )}
+          <SaveButton formAction={saveFormAction} />
+          <DeleteButton isDraft={isDraft} formAction={delFormAction} />
         </div>
+        <div className="note-editor-menu">{saveState?.message}</div>
         <label className="offscreen" htmlFor="note-title-input">
           Enter a title for your note
         </label>
